@@ -1,4 +1,4 @@
-import AdminEventsPageComponent from "../components/AdminEventsPage";
+import AdminEventsPageComponent from "../../components/AdminEventsPage";
 
 export default function AdminEventsPage({
   events,

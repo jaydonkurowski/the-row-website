@@ -1,4 +1,4 @@
-import AdminSpecialsPageComponent from "../components/AdminSpecialsPage";
+import AdminSpecialsPageComponent from "../../components/AdminSpecialsPage";
 
 export default function AdminSpecialsPage({
   specials,

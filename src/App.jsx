@@ -13,11 +13,13 @@ import Footer from "./components/Footer";
 import AdminLayout from "./components/AdminLayout";
 import { defaultEvents, defaultSpecials } from "./data/defaultData";
 import AdminDashboardHome from "./components/AdminDashboardHome";
-import { Routes, Route, Navigate } from "react-router-dom";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
-import AdminEventsPage from "./pages/AdminEventsPage";
-import AdminSpecialsPage from "./pages/AdminSpecialsPage";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminEventsPage from "./pages/admin/AdminEventsPage";
+import AdminSpecialsPage from "./pages/admin/AdminSpecialsPage";
 export default function App() {
+  const location = useLocation();
+const isAdminRoute = location.pathname.startsWith("/admin");
   const [adminOpen, setAdminOpen] = useState(false);
 const [activeAdminTab, setActiveAdminTab] = useState("dashboard");
   const [events, setEvents] = useState(() => {
@@ -166,35 +168,62 @@ async function addEvent() {
         </div>
       </section>
 
-      {adminOpen && (
+      {(adminOpen || isAdminRoute) && (
   <AdminLayout
   onClose={() => setAdminOpen(false)}
   activeAdminTab={activeAdminTab}
   setActiveAdminTab={setActiveAdminTab}
 >
-    {activeAdminTab === "dashboard" && (
-  <AdminDashboardHome events={events} specials={specials} />
-)}
-
-{activeAdminTab === "events" && (
-  <AdminEventsPage
-    events={events}
-    newEvent={newEvent}
-    setNewEvent={setNewEvent}
-    addEvent={addEvent}
-    removeEvent={removeEvent}
+<Routes>
+  <Route
+    path="/admin"
+    element={<Navigate to="/admin/dashboard" replace />}
   />
-)}
 
-{activeAdminTab === "specials" && (
-  <AdminSpecialsPage
-    specials={specials}
-    newSpecial={newSpecial}
-    setNewSpecial={setNewSpecial}
-    addSpecial={addSpecial}
-    removeSpecial={removeSpecial}
+  <Route
+    path="/admin/dashboard"
+    element={<AdminDashboardPage events={events} specials={specials} />}
   />
-)}
+
+  <Route
+    path="/admin/events"
+    element={
+      <AdminEventsPage
+        events={events}
+        newEvent={newEvent}
+        setNewEvent={setNewEvent}
+        addEvent={addEvent}
+        removeEvent={removeEvent}
+      />
+    }
+  />
+
+  <Route
+    path="/admin/specials"
+    element={
+      <AdminSpecialsPage
+        specials={specials}
+        newSpecial={newSpecial}
+        setNewSpecial={setNewSpecial}
+        addSpecial={addSpecial}
+        removeSpecial={removeSpecial}
+      />
+    }
+  />
+
+  <Route
+    path="/admin/*"
+    element={
+      <div className="admin-page">
+        <div className="admin-page-header">
+          <p className="eyebrow">Coming Soon</p>
+          <h1>Section Coming Soon</h1>
+          <p className="admin-muted">This section is being built next.</p>
+        </div>
+      </div>
+    }
+  />
+</Routes>
 
 {activeAdminTab !== "dashboard" &&
   activeAdminTab !== "events" &&

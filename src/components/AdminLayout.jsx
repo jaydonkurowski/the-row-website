@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -50,18 +51,16 @@ export default function AdminLayout({
             const Icon = item.icon;
 
             return (
-              <button
-                key={item.id}
-                className={
-                  activeAdminTab === item.id
-                    ? "admin-nav-item active"
-                    : "admin-nav-item"
-                }
-                onClick={() => setActiveAdminTab(item.id)}
-              >
-                <Icon size={18} />
-                {item.label}
-              </button>
+              <NavLink
+  key={item.id}
+  to={`/admin/${item.id}`}
+  className={({ isActive }) =>
+    isActive ? "admin-nav-item active" : "admin-nav-item"
+  }
+>
+  <Icon size={18} />
+  {item.label}
+</NavLink>
             );
           })}
         </div>
