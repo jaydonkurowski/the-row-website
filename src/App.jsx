@@ -18,6 +18,7 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminEventsPage from "./pages/admin/AdminEventsPage";
 import AdminSpecialsPage from "./pages/admin/AdminSpecialsPage";
 import AdminMenuPage from "./pages/admin/AdminMenuPage";
+import AdminBourbonPage from "./pages/admin/AdminBourbonPage";
 export default function App() {
   const location = useLocation();
 const isAdminRoute = location.pathname.startsWith("/admin");
@@ -53,11 +54,24 @@ const [newMenuItem, setNewMenuItem] = useState({
   price: "",
   available: true,
 });
+const [bourbonItems, setBourbonItems] = useState([]);
+
+const [newBourbonItem, setNewBourbonItem] = useState({
+  name: "",
+  distillery: "",
+  proof: "",
+  price_one_oz: "",
+  price_one_half_oz: "",
+  bottle_remaining: 100,
+  featured: false,
+  notes: "",
+});
 
  useEffect(() => {
   fetchEvents();
   fetchSpecials();
   fetchMenuItems();
+  fetchBourbonItems();
 }, []);
 
 async function fetchEvents() {
@@ -98,6 +112,19 @@ async function fetchMenuItems() {
   }
 
   setMenuItems(data);
+}
+async function fetchBourbonItems() {
+  const { data, error } = await supabase
+    .from("bourbon_items")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching bourbon items:", error);
+    return;
+  }
+
+  setBourbonItems(data);
 }
   useEffect(() => {
     localStorage.setItem("rowSpecials", JSON.stringify(specials));
@@ -212,6 +239,47 @@ async function removeMenuItem(index) {
 
   fetchMenuItems();
 }
+async function addBourbonItem() {
+  if (!newBourbonItem.name.trim()) return;
+
+  const { error } = await supabase
+    .from("bourbon_items")
+    .insert([newBourbonItem]);
+
+  if (error) {
+    alert("Error adding bourbon: " + error.message);
+    return;
+  }
+
+  setNewBourbonItem({
+    name: "",
+    distillery: "",
+    proof: "",
+    price_one_oz: "",
+    price_one_half_oz: "",
+    bottle_remaining: 100,
+    featured: false,
+    notes: "",
+  });
+
+  fetchBourbonItems();
+}
+
+async function removeBourbonItem(index) {
+  const item = bourbonItems[index];
+
+  const { error } = await supabase
+    .from("bourbon_items")
+    .delete()
+    .eq("id", item.id);
+
+  if (error) {
+    alert("Error deleting bourbon: " + error.message);
+    return;
+  }
+
+  fetchBourbonItems();
+}
 
   function resetEvents() {
     setEvents(defaultEvents);
@@ -237,6 +305,18 @@ async function removeMenuItem(index) {
   setActiveAdminTab={setActiveAdminTab}
 >
 <Routes>
+  <Route
+  path="/admin/bourbon"
+  element={
+    <AdminBourbonPage
+      bourbonItems={bourbonItems}
+      newBourbonItem={newBourbonItem}
+      setNewBourbonItem={setNewBourbonItem}
+      addBourbonItem={addBourbonItem}
+      removeBourbonItem={removeBourbonItem}
+    />
+  }
+/>
   <Route
   path="/admin/menu"
   element={
