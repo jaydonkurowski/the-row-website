@@ -261,3 +261,144 @@ footer p {
 .nav-links a:hover {
   color: #fbbf24;
 }
+.admin-os {
+  min-height: 100vh;
+  background: #020617;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-sidebar {
+  background: #0f172a;
+  padding: 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.admin-sidebar-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.admin-sidebar-header p {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.admin-close {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.admin-nav {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-nav-item {
+  width: 100%;
+  background: transparent;
+  color: #cbd5e1;
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+}
+
+.admin-nav-item:hover {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+}
+
+.admin-main {
+  padding: 30px;
+}
+
+@media (max-width: 900px) {
+  .admin-os {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+.admin-nav-item.active {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
+}
+.admin-page {
+  color: white;
+}
+
+.admin-page-header {
+  margin-bottom: 28px;
+}
+
+.admin-page-header h1 {
+  font-size: 42px;
+  margin: 6px 0;
+}
+
+.admin-muted {
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.admin-stat-card {
+  background: linear-gradient(180deg, #111827, #020617);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.admin-stat-card p {
+  color: #94a3b8;
+  margin: 12px 0 6px;
+}
+
+.admin-stat-card h3 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.admin-card {
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+@media (max-width: 1000px) {
+  .admin-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
