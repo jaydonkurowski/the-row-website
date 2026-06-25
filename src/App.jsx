@@ -17,6 +17,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminEventsPage from "./pages/admin/AdminEventsPage";
 import AdminSpecialsPage from "./pages/admin/AdminSpecialsPage";
+import AdminMenuPage from "./pages/admin/AdminMenuPage";
 export default function App() {
   const location = useLocation();
 const isAdminRoute = location.pathname.startsWith("/admin");
@@ -43,10 +44,20 @@ const [activeAdminTab, setActiveAdminTab] = useState("dashboard");
     name: "",
     deal: "",
   });
+  const [menuItems, setMenuItems] = useState([]);
 
-  useEffect(() => {
+const [newMenuItem, setNewMenuItem] = useState({
+  category: "",
+  name: "",
+  description: "",
+  price: "",
+  available: true,
+});
+
+ useEffect(() => {
   fetchEvents();
   fetchSpecials();
+  fetchMenuItems();
 }, []);
 
 async function fetchEvents() {
@@ -74,6 +85,19 @@ async function fetchSpecials() {
   }
 
   setSpecials(data);
+}
+async function fetchMenuItems() {
+  const { data, error } = await supabase
+    .from("menu_items")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching menu items:", error);
+    return;
+  }
+
+  setMenuItems(data);
 }
   useEffect(() => {
     localStorage.setItem("rowSpecials", JSON.stringify(specials));
@@ -150,6 +174,44 @@ async function addEvent() {
 
   fetchSpecials();
 }
+async function addMenuItem() {
+  if (!newMenuItem.name.trim()) return;
+
+  const { error } = await supabase
+    .from("menu_items")
+    .insert([newMenuItem]);
+
+  if (error) {
+    alert("Error adding menu item: " + error.message);
+    return;
+  }
+
+  setNewMenuItem({
+    category: "",
+    name: "",
+    description: "",
+    price: "",
+    available: true,
+  });
+
+  fetchMenuItems();
+}
+
+async function removeMenuItem(index) {
+  const itemToDelete = menuItems[index];
+
+  const { error } = await supabase
+    .from("menu_items")
+    .delete()
+    .eq("id", itemToDelete.id);
+
+  if (error) {
+    alert("Error deleting menu item: " + error.message);
+    return;
+  }
+
+  fetchMenuItems();
+}
 
   function resetEvents() {
     setEvents(defaultEvents);
@@ -175,6 +237,18 @@ async function addEvent() {
   setActiveAdminTab={setActiveAdminTab}
 >
 <Routes>
+  <Route
+  path="/admin/menu"
+  element={
+    <AdminMenuPage
+      menuItems={menuItems}
+      newMenuItem={newMenuItem}
+      setNewMenuItem={setNewMenuItem}
+      addMenuItem={addMenuItem}
+      removeMenuItem={removeMenuItem}
+    />
+  }
+/>
   <Route
     path="/admin"
     element={<Navigate to="/admin/dashboard" replace />}
